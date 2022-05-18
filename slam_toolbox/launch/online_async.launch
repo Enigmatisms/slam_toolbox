@@ -1,7 +1,11 @@
 <launch>
-
-  <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" output="screen">
+  <arg name="bag_to_play"/>
+  <arg name="traj_output_path"/>
+  <!-- 输入的traj_output_path是路径+文件名，不需要扩展名称（no .xxx） -->
+  <node name="rviz_slam" pkg="rviz" type="rviz" args="-d $(find slam_toolbox)/launch/toolbox.rviz" />
+  <node name="playbag" pkg="rosbag" type="play" required="false" args="$(arg bag_to_play) -r 6 -d 1 -u 100" />
+  <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" output="screen" required = "true">
     <rosparam command="load" file="$(find slam_toolbox)/config/mapper_params_online_async.yaml" />
+    <param name="traj_output_path" value="$(arg traj_output_path)"/>
   </node>
-
 </launch>

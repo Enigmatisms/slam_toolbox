@@ -31,6 +31,8 @@ public:
   AsynchronousSlamToolbox(ros::NodeHandle& nh);
   ~AsynchronousSlamToolbox() {};
 
+public:
+  bool idle_flag;
 protected:
   virtual void laserCallback(
     const sensor_msgs::LaserScan::ConstPtr& scan) override final;

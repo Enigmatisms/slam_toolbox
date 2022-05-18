@@ -766,6 +766,11 @@ namespace karto
     void CorrectPoses();
 
     /**
+     * @defined by hqy
+     */
+    void outputSelfDefinedPoses(const std::string& path) const;
+
+    /**
      * Find "nearby" (no further than given distance away) scans through graph links
      * @param pScan
      * @param maxDistance

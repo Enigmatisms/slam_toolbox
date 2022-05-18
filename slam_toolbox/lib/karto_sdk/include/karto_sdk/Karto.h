@@ -5332,6 +5332,9 @@ namespace karto
     }
 
   public:
+    uint64_t time_stamp = 0;
+
+  public:
     /**
      * Gets the range readings of this scan
      * @return range readings of this scan

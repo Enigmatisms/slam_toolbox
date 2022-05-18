@@ -58,6 +58,9 @@ public:
   SlamToolbox(ros::NodeHandle& nh);
   ~SlamToolbox();
 
+public:
+  virtual bool serializePoseGraphCallback(slam_toolbox_msgs::SerializePoseGraph::Request& req,
+    slam_toolbox_msgs::SerializePoseGraph::Response& resp);
 protected:
   // threads
   void publishVisualizations();
@@ -72,8 +75,6 @@ protected:
   virtual void laserCallback(const sensor_msgs::LaserScan::ConstPtr& scan) = 0;
   bool mapCallback(nav_msgs::GetMap::Request& req,
     nav_msgs::GetMap::Response& res);
-  virtual bool serializePoseGraphCallback(slam_toolbox_msgs::SerializePoseGraph::Request& req,
-    slam_toolbox_msgs::SerializePoseGraph::Response& resp);
   virtual bool deserializePoseGraphCallback(slam_toolbox_msgs::DeserializePoseGraph::Request& req,
     slam_toolbox_msgs::DeserializePoseGraph::Response& resp);
   void loadSerializedPoseGraph(std::unique_ptr<karto::Mapper>&, std::unique_ptr<karto::Dataset>&);

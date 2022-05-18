@@ -301,7 +301,6 @@ karto::LaserRangeFinder* SlamToolbox::getLaser(const
       return nullptr;
     }
   }
-
   return lasers_[frame].getLaser();
 }
 
@@ -398,7 +397,6 @@ karto::LocalizedRangeScan* SlamToolbox::getLocalizedRangeScan(
   tf2::Transform pose_original = smapper_->toTfPose(karto_pose);
   tf2::Transform tf_pose_transformed = reprocessing_transform_ * pose_original;
   karto::Pose2 transformed_pose = smapper_->toKartoPose(tf_pose_transformed);
-
   // create localized range scan
   karto::LocalizedRangeScan* range_scan = new karto::LocalizedRangeScan(
     laser->GetName(), readings);
@@ -478,6 +476,8 @@ karto::LocalizedRangeScan* SlamToolbox::addScan(
   // get our localized range scan
   karto::LocalizedRangeScan* range_scan = getLocalizedRangeScan(
     laser, scan, karto_pose);
+  if (range_scan)
+    range_scan->time_stamp = scan->header.stamp.toNSec();
 
   // Add the localized range scan to the smapper
   boost::mutex::scoped_lock lock(smapper_mutex_);
@@ -523,7 +523,6 @@ karto::LocalizedRangeScan* SlamToolbox::addScan(
     {
       scan_holder_->addScan(*scan);
     }
-
     setTransformFromPoses(range_scan->GetCorrectedPose(), karto_pose,
       scan->header.stamp, update_reprocessing_transform);
     dataset_->Add(range_scan);

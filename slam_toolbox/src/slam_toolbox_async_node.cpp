@@ -17,13 +17,31 @@
 
 /* Author: Steven Macenski */
 
+#include <chrono>
 #include "slam_toolbox/slam_toolbox_async.hpp"
+
+class TicToc {
+private:
+    std::chrono::_V2::system_clock::time_point start;
+public:
+    void tic() {
+        start = std::chrono::system_clock::now();
+    }
+
+    // return in milliseconds
+    double toc() const {
+        auto end = std::chrono::system_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        return static_cast<double>(duration.count()) / 1000.0;
+    }
+};
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "slam_toolbox");
   ros::NodeHandle nh("~");
   ros::spinOnce();
+  std::string traj_output_path = nh.param<std::string>("traj_output_path", "/home/stn/slam/trajectories/test/output");
 
   int stack_size;
   if (nh.getParam("stack_size_to_use", stack_size))
@@ -41,6 +59,30 @@ int main(int argc, char** argv)
 
   slam_toolbox::AsynchronousSlamToolbox sst(nh);
 
-  ros::spin();
+  double idle_interval = -2000.0;
+  TicToc idle_timer;
+  idle_timer.tic();
+  ros::Rate rate(1000);
+  while (ros::ok()) {
+    ros::spinOnce();
+    if (sst.idle_flag == false) {
+      idle_interval = 0.0;
+      sst.idle_flag = true;
+    }
+    else {
+      rate.sleep();
+      idle_interval += idle_timer.toc();
+    }
+    if (idle_interval > 3000.) {
+      printf("Being idle for a very long time, exiting...\n");
+      break;
+    }
+    idle_timer.tic();
+  }
+  slam_toolbox_msgs::SerializePoseGraph::Request req;
+  slam_toolbox_msgs::SerializePoseGraph::Response res;
+  req.filename = traj_output_path;
+  sst.serializePoseGraphCallback(req, res);
+  ros::shutdown();
   return 0;
 }

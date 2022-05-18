@@ -119,7 +119,7 @@ CeresSolver::CeresSolver() :
   options_.max_num_consecutive_invalid_steps = 3;
   options_.max_consecutive_nonmonotonic_steps =
     options_.max_num_consecutive_invalid_steps;
-  options_.num_threads = 50;
+  options_.num_threads = 12;
   options_.use_nonmonotonic_steps = true;
   options_.jacobi_scaling = true;
 

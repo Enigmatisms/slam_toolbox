@@ -28,6 +28,7 @@ AsynchronousSlamToolbox::AsynchronousSlamToolbox(ros::NodeHandle& nh)
 /*****************************************************************************/
 {
   loadPoseGraphByParams(nh);
+  idle_flag = true;
 }
 
 /*****************************************************************************/
@@ -51,8 +52,8 @@ void AsynchronousSlamToolbox::laserCallback(
       " %s; discarding scan", scan->header.frame_id.c_str());
     return;
   }
-
   addScan(laser, scan, pose);
+  idle_flag = false;
   return;
 }
 

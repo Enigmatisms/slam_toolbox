@@ -2041,6 +2041,24 @@ namespace karto
     return chain;
   }
 
+  void MapperGraph::outputSelfDefinedPoses(const std::string& path) const{
+    const VertexMap& all_vertices = this->GetVertices();
+    printf("============ Output self defined trajectories ==========\n");
+    printf("There are %lu vertex map in the graph.\n", all_vertices.size());
+    size_t vertex_cnt = 0;
+    std::ofstream output_file(path);
+    for (const auto& [name, vertex_map]: all_vertices) {
+      vertex_cnt += vertex_map.size();
+      for (const auto& [id, vertex]: vertex_map) {
+        uint64_t time_stamp = vertex->GetObject()->time_stamp;
+        Pose2 scanner_pose = vertex->GetObject()->GetSensorPose();
+        output_file << time_stamp << " " << scanner_pose.GetX() << " " << scanner_pose.GetY() << " " << scanner_pose.GetHeading() <<std::endl;
+      }
+    }
+    printf("There are %lu vertices in the graph, output completed.\n", vertex_cnt);
+    output_file.close();
+  }
+
   void MapperGraph::CorrectPoses()
   {
     // optimize scans!
@@ -2671,6 +2689,8 @@ namespace karto
   void Mapper::SaveToFile(const std::string& filename)
   {
     printf("Save To File %s \n", filename.c_str());
+    size_t index = filename.find_last_of(".");
+    m_pGraph->outputSelfDefinedPoses(filename.substr(0, index) + ".tjc");
     std::ofstream ofs(filename.c_str());
     boost::archive::binary_oarchive oa(ofs, boost::archive::no_codecvt);
     oa << BOOST_SERIALIZATION_NVP(*this);
