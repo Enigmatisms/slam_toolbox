@@ -79,6 +79,11 @@ int main(int argc, char** argv)
     }
     idle_timer.tic();
   }
+  
+  size_t index = traj_output_path.find_last_of("/");
+  std::string command = "scrot -b " + traj_output_path.substr(0, index) + "/thumbnails/toolbox_%Y-%m-%d-%H-%M-%S.png";
+  system(command.c_str());
+
   slam_toolbox_msgs::SerializePoseGraph::Request req;
   slam_toolbox_msgs::SerializePoseGraph::Response res;
   req.filename = traj_output_path;

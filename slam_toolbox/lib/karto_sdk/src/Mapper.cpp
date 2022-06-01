@@ -2691,9 +2691,9 @@ namespace karto
     printf("Save To File %s \n", filename.c_str());
     size_t index = filename.find_last_of(".");
     m_pGraph->outputSelfDefinedPoses(filename.substr(0, index) + ".tjc");
-    std::ofstream ofs(filename.c_str());
-    boost::archive::binary_oarchive oa(ofs, boost::archive::no_codecvt);
-    oa << BOOST_SERIALIZATION_NVP(*this);
+    // std::ofstream ofs(filename.c_str());
+    // boost::archive::binary_oarchive oa(ofs, boost::archive::no_codecvt);
+    // oa << BOOST_SERIALIZATION_NVP(*this);
   }
 
   void Mapper::LoadFromFile(const std::string& filename)

@@ -42,7 +42,7 @@ inline void write(const std::string& filename,
   try
   {
     mapper.SaveToFile(filename + std::string(".posegraph"));
-    dataset.SaveToFile(filename + std::string(".data"));
+    // dataset.SaveToFile(filename + std::string(".data"));
   }
   catch (boost::archive::archive_exception e)
   {
